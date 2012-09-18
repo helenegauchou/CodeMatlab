@@ -7,10 +7,10 @@ settings.TYPE_OF_TASK = 1:2; %1 = tilt side identification task; 2=switch betwee
 settings.SET_SIZE_task1 = [3,7,11];
 settings.SET_SIZE_task2 = [7,11,16];
 
-settings.TARGET_CASE_task2 = 0:3; % 0=no target; 1=long line; 2=T shape; 
+settings.TARGET_CASE_task2 = 0:3; % 0 & 1=no target; 2=long line; 3=T shape; 
 settings.TARGET_CASE_task1 = 4:5; % 3=left tilt; 4=right tilt 
 settings.CASE_NO_TARGET_0 = 0;
-settings.CASE_NO_TARGET_0 = 1;
+%settings.CASE_NO_TARGET_0 = 1;
 settings.CASE_LONG_LINE = 2;
 settings.CASE_T = 3;
 settings.CASE_LEFT_TILT = 4;
@@ -70,7 +70,7 @@ settings.MINIMAL_INTER_ITEM_DISTANCE = 0.6 * settings.CM;
 white = [255,255,255]; 
 black = [0,0,0];
 red = [255,0,0];
-settings.TARGET_COLOR = red;
+settings.TARGET_COLOR = white;
 settings.NON_TARGETS_COLOR = white;
 settings.FIX_POINT_COLOR = white;
 settings.BACKGROUND_COLOR = black;
