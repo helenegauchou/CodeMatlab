@@ -1,0 +1,37 @@
+FlushEvents('keyDown'); % or drawnow
+trial_end = 0;
+trial_start_time = tic;
+
+while 1
+	for screen_number = 1:4
+		test_screen_number = Iseven(screen_number);
+		if test_screen_number == 1
+			SCREEN_DURATION = settings.DIPLAY_DURATION
+		else
+			SCREEN_DURATION = settings.BLANK_DURATION
+		end
+
+    		Screen('CopyWindow',win1,win0);
+    		display_start_time = tic;
+	    	while 1
+		        if KbCheck == 1
+            			response_time = (toc(trial_start_time))*1000;
+			        key = GetChar;
+				trial_end = 1;
+		            	if (key == 'q')||(key == 'Q')||(key == 'm')||(key == 'M')
+		                break
+			        end
+		        end
+
+		        if toc(display_start_time) > SCREEN_DURATION
+		        break
+		        end
+		end
+    		if trial_end == 1
+	        break
+		end
+	end
+	if trial_end == 1
+        break
+    	end    
+end

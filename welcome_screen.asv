@@ -1,0 +1,28 @@
+global_settings;
+
+Text1 = 'WELCOME!';
+Text2 = 'The goal of this experiment is to study the effect of CHRONIC STRESS on cognition.';
+Text3 = 'For that reason we first need to gather information about how you feel today and in general.';
+Text4 = 'You will have to fill out 3 questionnaires.';
+Text5 = 'REMEMBER that it is really IMPORTANT that you answer HONESTLY since we are trying to understand';
+Text6 = 'the link between how you perform and how you feel.';
+Text7 = 'Before you answer each questionnaire please read the instructions carefully.';
+Text8 = 'Do not hesitate to ask the experimenter if you have any questions.';
+Text9 = 'Please hit the SPACE BAR when you are ready to proceed to the questionnaires.';
+Screen(win0,'DrawText',Text1,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS);
+Screen(win0,'DrawText',Text2,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 2*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
+Screen(win0,'DrawText',Text3,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 3*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
+Screen(win0,'DrawText',Text4,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 4*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
+Screen(win0,'DrawText',Text5,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 6*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
+Screen(win0,'DrawText',Text6,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 7*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
+Screen(win0,'DrawText',Text7,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 9*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
+Screen(win0,'DrawText',Text8,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 10*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
+Screen(win0,'DrawText',Text9,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 12*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
+while 1
+    if KbCheck == 1
+        if GetChar == 32;% Space bar
+            break
+        end
+    end
+end
+Screen('CopyWindow',winclear,win0);
