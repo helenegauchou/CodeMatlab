@@ -84,7 +84,7 @@ while global_accuracy_rate < 90;
     while 1
         if KbCheck == 1
             key = GetChar;
-            if (key == 'n') || (key == 'N')
+            if lower(key) == settings.NEXT_KEY_FOR_EXPERIMENTER
                 break
             end
         end

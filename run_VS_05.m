@@ -1,8 +1,10 @@
 function run_VS_05
 
-global win0 win1 win2 winclear winblank
+global win0 win1 win2 winclear winnoise
 global response_detection response_identification accuracy_detection accuracy_identification
-global response_time response_time_log excentricity quadrant %imageArray
+global response_time response_time_log excentricity quadrant
+global matrix_tot
+global DIPLAY_DURATION BLANK_DURATION
 
 HideCursor;
 
@@ -12,14 +14,13 @@ global_settings;
 win0 = Screen(0,'OpenWindow',settings.BACKGROUND_COLOR,settings.screenRect,settings.COLOR_DEPTH);
 win1 = Screen(win0,'OpenOffscreenWindow',settings.BACKGROUND_COLOR,settings.screenRect,settings.COLOR_DEPTH);
 win2 = Screen(win0,'OpenOffscreenWindow',settings.BACKGROUND_COLOR,settings.screenRect,settings.COLOR_DEPTH);
-winblank = Screen(win0,'OpenOffscreenWindow',settings.BLANK_SCREEN_COLOR,settings.screenRect,settings.COLOR_DEPTH);
+winnoise = Screen(win0,'OpenOffscreenWindow',settings.BLANK_SCREEN_COLOR,settings.screenRect,settings.COLOR_DEPTH);
 winclear = Screen(win0,'OpenOffscreenWindow',settings.BACKGROUND_COLOR,settings.screenRect,settings.COLOR_DEPTH);
 
 Screen(win0,'TextSize',settings.LETTER_SIZE);
 Screen(win0,'TextFont',settings.LETTER_FONT);
 
 % QUESTIONS FOR EXPERIMENTER **********************************************
-% type of run
 GetEchoString(win0,'FOR EXPERIMENTER ONLY - upper case check!',settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS,settings.BACKGROUND_COLOR);
 
 % type of run
@@ -38,7 +39,7 @@ part_number = str2num(question_part_number);
 
 % Diplays following questions only at the beginning of the part 1
 if part_number == 1
-    
+
     % Experimental group: 0 = control, no stress; 1 = test, stress
     Screen('CopyWindow',winclear,win0);
     question_condition = GetEchoString(win0,'FOR EXPERIMENTER ONLY - Condition? [0/1]',settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS,settings.BACKGROUND_COLOR);
@@ -54,8 +55,21 @@ if part_number == 1
     question_first_task_type = GetEchoString(win0,'FOR EXPERIMENTER ONLY - First task type: Identification [1] or Detection [2]?',settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS,settings.BACKGROUND_COLOR);
     first_task_type = str2num(question_first_task_type);
     
-    % Diplays following questions only in non check mode
+    % Diplays following questions only in CHECK mode
+    if run_type == 1
+
+        Screen('CopyWindow',winclear,win0);
+        question_DIPLAY_DURATION = GetEchoString(win0,'FOR EXPERIMENTER ONLY - Presentation time in seconds (display)?',settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS,settings.BACKGROUND_COLOR);
+        DIPLAY_DURATION = str2num(question_DIPLAY_DURATION);
+        
+        Screen('CopyWindow',winclear,win0);
+        question_BLANK_DURATION = GetEchoString(win0,'FOR EXPERIMENTER ONLY - Presentation time in seconds (blank)?',settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS,settings.BACKGROUND_COLOR);
+        BLANK_DURATION = str2num(question_BLANK_DURATION);
+    end
+    
+    % Diplays following questions only in NON CHECK mode
     if run_type == 2
+
         % Partcipant's age
         Screen('CopyWindow',winclear,win0);
         question_age = GetEchoString(win0,'FOR EXPERIMENTER ONLY - age?',settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS,settings.BACKGROUND_COLOR);
@@ -89,6 +103,7 @@ if part_number == 1
         question_vision = GetEchoString(win0,'FOR EXPERIMENTER ONLY - corrective eyewear [0], glasses [1], or contacts [2]?',settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS,settings.BACKGROUND_COLOR);
         vision = str2num(question_vision);
     else
+
         age = 100;
         gender = 100;
         handedness = 100;
@@ -97,12 +112,15 @@ if part_number == 1
 end
 Screen('CopyWindow',winclear,win0);
 
+% QUESTIONNAIRES PRE EXPERIMENT *******************************************
 if run_type == 2
-    if part_number == 1 % QUESTIONNAIRES PRE EXPERIMENT *******************
+
+    if part_number == 1
         [sum_STAI,sum_PSS,sum_D,sum_E,sum_W] = run_Q_pre(ID_subject);
         Screen('CopyWindow',winclear,win0);
     end
 else
+
     sum_STAI = 100;
     sum_PSS = 100;
     sum_D = 100;
@@ -111,13 +129,13 @@ else
 end
 
 % MATRIX ******************************************************************
-
 if part_number == 1
+
     matrix_tot = ones((settings.TRIAL_NUMBER_PER_BLOCK_task1 * settings.NUMBER_OF_BLOCKS_PER_TASK_task1 + ...
         settings.TRIAL_NUMBER_PER_BLOCK_task2 * settings.NUMBER_OF_BLOCKS_PER_TASK_task2),...
         CONST_number_columns)* CONST_default_value; % Create the matrix for datas filled with default value
-
-    matrix_tot(:,(column_part:column_set_size)) = create_experiment(first_task_type);
+    
+    matrix_tot(:,(column_part:column_first_VS_task_type)) = create_experiment(first_task_type);
     
     total_number_of_rows = length(matrix_tot);
     
@@ -129,59 +147,18 @@ else
     load(strcat('Matrix_Participant_',question_ID_subject));
 end
 
-
-% EXPERIMENT DESCRIPTION **************************************************
-
+% ONLY WHEN RUN MODE = EXPERIMENT *****************************************
 stress = matrix_tot(1,column_stress);
-
 if run_type == 2
+    % experiment overview -------------------------------------------------
     if part_number == 1
-        if stress == 1
-            Text1 = 'In this study we are trying to understand the effect of chronic stress on people’s intelligence.';
-            Text2 = 'The questionnaires you filled out will tell us about your level of chronic stress.';
-            Text3 = 'Now you will be required to complete different tasks several times.';
-            Text4 = 'These tasks evaluate different types of intelligence.';
-            Text5 = 'The final stage of the experiment will consist of a short oral presentation and an interview';
-            Text6 = 'that will be conducted by the experimenters and two other examiners.';
-            Text7 = '>>> The interview will be videotaped.';
-            Text8 = '>>> You will receive an assessment of your performance on the interview with respect to other participants. ';
-            Text9 = '>>> You will have 5 minutes before the interview to get ready.';
-            Text10 = 'Please ask the experimenter for further instructions.';
-            Screen(win0,'DrawText',Text1,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text2,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 2*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text3,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 5*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text4,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 6*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text5,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 8*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text6,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 9*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text7,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 11*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text8,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 12*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text9,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 13*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text10,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 15*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-        else
-            Text1 = 'In this study we are trying to understand the effect of chronic stress on cognition.';
-            Text2 = 'The questionnaires you filled out will tell us about your level of chronic stress.';
-            Text3 = 'Now you will be required to complete 3 different tasks 4 times.';
-            Text4 = 'Please ask the experimenter for further instructions.';
-            Screen(win0,'DrawText',Text1,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text2,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 2*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text3,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 5*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-            Screen(win0,'DrawText',Text4,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y + 6*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
-        end
-        while 1
-            if KbCheck == 1
-                key = GetChar;
-                if (key == 'N')||(key == 'n')
-                    break
-                end
-            end
-        end
-        Screen('CopyWindow',winclear,win0);
+        overview(stress);
     end
     
-    % SERIES COMPLETION TASK *************************************************
+    % series completion task ----------------------------------------------
     series_completion_task(stress,part_number);
     
-    % SUBTRACTION TASK ******************************************************
+    % subtraction task ----------------------------------------------------
     substraction_task(stress,part_number);
 end
 
@@ -212,14 +189,14 @@ target_key_side = matrix_tot(block_first_matrix_line,column_target_key_side);
 % instructions
 instruction(task,target_key_side);
 
-% training
+%training
 block_number =  matrix_tot(block_first_matrix_line,column_block);
 if block_number == 1
     if task == 1
-    training_task1(task,target_key_side,stress);
+        training_task1(task,target_key_side,stress);
     elseif task == 2
-    training_task2(task,target_key_side,stress);
-    end    
+        training_task2(task,target_key_side,stress);
+    end
 end
 
 % instructions reminder
@@ -228,106 +205,43 @@ readytostart;
 % task
 if task == 1
     trial_number_per_block = settings.TRIAL_NUMBER_PER_BLOCK_task1;
+    task_setsize = settings.SET_SIZE_task1;
 else
+
     trial_number_per_block = settings.TRIAL_NUMBER_PER_BLOCK_task2;
+    task_setsize = settings.SET_SIZE_task2;
 end
 
 for x = 1:trial_number_per_block
-        
-        current_matrix_line = block_first_matrix_line -1 +x;
-        
-        Exp(matrix_tot(current_matrix_line,column_task),...
-            matrix_tot(current_matrix_line,column_target_case),...
-            matrix_tot(current_matrix_line,column_target_presence),...
-            matrix_tot(current_matrix_line,column_set_size),...
-            matrix_tot(current_matrix_line,column_target_key_side),...
-            matrix_tot(current_matrix_line,column_stress));
-        
-        matrix_tot(current_matrix_line,column_response_detection:column_quadrant) = ...
-            [response_detection,...
-             response_identification,...
-             accuracy_detection,...
-             accuracy_identification,...
-             response_time,...
-             response_time_log,...
-             excentricity,...
-             quadrant];
+    
+    current_matrix_line = block_first_matrix_line - 1 + x;
+
+
+    
+    
+    Exp(matrix_tot(current_matrix_line,column_task),...
+        matrix_tot(current_matrix_line,column_target_case),...
+        matrix_tot(current_matrix_line,column_target_presence),...
+        matrix_tot(current_matrix_line,column_set_size),...
+        matrix_tot(current_matrix_line,column_first_VS_task_type),...
+        matrix_tot(current_matrix_line,column_target_key_side),...
+        matrix_tot(current_matrix_line,column_stress));
+    
+    matrix_tot(current_matrix_line,column_response_detection:column_quadrant) = ...
+        [response_detection,...
+        response_identification,...
+        accuracy_detection,...
+        accuracy_identification,...
+        response_time,...
+        response_time_log,...
+        excentricity,...
+        quadrant];
 end
 
 Screen('CopyWindow',winclear,win0);
 
-% % Post block feedback
-%
-% matrix_current_part = matrix_tot(block_first_matrix_line:block_last_matrix_line, :);
-%
-% matrix_target_present = matrix_current_part(matrix_tot((matrix_line_start:matrix_line_end),column_target_presence) == 1, :);
-% matrix_target_absent = matrix_current_part(matrix_tot((matrix_line_start:matrix_line_end),column_target_presence) == 0, :);
-%
-% matrix_target_present_correct = matrix_target_present(matrix_target_present(:,column_accuracy) == 1, :);
-% matrix_target_absent_correct = matrix_target_absent(matrix_target_absent(:,column_accuracy) == 1, :);
-%
-% hit_rate = sum(matrix_target_present(:,column_accuracy),1)/size(matrix_target_present,1)*100;
-% hit_rate_string = int2str(floor(hit_rate));
-%
-% correct_rejection_rate = sum(matrix_target_absent(:,column_accuracy),1)/size(matrix_target_absent,1)*100;
-% correct_rejection_rate_string = int2str(floor(correct_rejection_rate));
-%
-% global_accuracy_rate = (correct_rejection_rate+hit_rate)/2;
-% global_accuracy_rate_string = int2str(floor(global_accuracy_rate));
-%
-% average_response_time_hit_string = int2str(floor((sum(matrix_target_present_correct(:,column_response_time),1))/size(matrix_target_present_correct,1)));
-% average_response_time_correct_rejection_string = int2str(floor((sum(matrix_target_absent_correct(:,column_response_time),1))/size(matrix_target_absent_correct,1)));
-%
-% l=0;
-% matRT_target_present = ones(1,3);
-% matRT_target_absent = ones(1,3);
-% for setsize = [3,7,11]
-%     matrix_target_present_correct_setsize = matrix_target_present_correct(matrix_target_present_correct(:,column_set_size) == setsize, :);
-%     matrix_target_absent_correct_setsize = matrix_target_absent_correct(matrix_target_absent_correct(:,column_set_size) == setsize, :);
-%     average_response_time_hit_setsize = (sum(matrix_target_present_correct_setsize(:,column_response_time),1))/size(matrix_target_present_correct_setsize,1);
-%     average_response_time_correctrejection_setsize = (sum(matrix_target_absent_correct_setsize(:,column_response_time),1))/size(matrix_target_absent_correct_setsize,1);
-%     l=l+1;
-%     matRT_target_present(1,l) = average_response_time_hit_setsize;
-%     matRT_target_absent(1,l) = average_response_time_correctrejection_setsize;
-% end
-%
-% setsize = [3 7 11]';
-% matRT_target_present = matRT_target_present';
-% matRT_target_absent = matRT_target_absent';
-% mat_intercept_slope_target_present=[ones(3,1) setsize]\matRT_target_present;
-% mat_intercept_slope_target_absent = [ones(3,1) setsize]\matRT_target_absent;
-% slope_target_present_string = int2str(floor(mat_intercept_slope_target_present(2,1)));
-% slope_target_absent_string = int2str(floor(mat_intercept_slope_target_absent(2,1)));
-%
-%
-% Screen(win0,'TextSize',settings.LETTER_SIZE);
-% Screen(win0,'TextFont',settings.LETTER_FONT);
-%
-% Text_0 = 'Please ask the experimenter for further instructions.';
-% Text_1 = strcat('AVERAGE ACCURACY: ',global_accuracy_rate_string);
-% Text_2 = strcat('Hit rate: ',hit_rate_string);
-% Text_3 = strcat('Average response time: ',average_response_time_hit_string);
-% Text_4 = strcat('Correct rejection rate: ',correct_rejection_rate_string);
-% Text_5 = strcat('Average response time: ',average_response_time_correct_rejection_string);
-% Text_6 = strcat('Slope target present: ',slope_target_present_string);
-% Text_7 = strcat('Slope target absent: ',slope_target_absent_string);
-%
-% Screen(win0,'DrawText',Text_0,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y  ,settings.LETTER_COLOR);
-% Screen(win0,'DrawText',Text_1,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y+2*settings.CM  ,settings.LETTER_COLOR);
-% Screen(win0,'DrawText',Text_2,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y+4*settings.CM,settings.LETTER_COLOR);
-% Screen(win0,'DrawText',Text_3,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y+5*settings.CM,settings.LETTER_COLOR);
-% Screen(win0,'DrawText',Text_4,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y+7*settings.CM,settings.LETTER_COLOR);
-% Screen(win0,'DrawText',Text_5,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y+8*settings.CM,settings.LETTER_COLOR);
-% Screen(win0,'DrawText',Text_6,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y+10*settings.CM,settings.LETTER_COLOR);
-% Screen(win0,'DrawText',Text_7,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y+11*settings.CM,settings.LETTER_COLOR);
-% while 1
-%     if KbCheck == 1 %
-%         if (GetChar == 'n') || (GetChar == 'N')
-%             break;
-%         end
-%     end
-% end
-% Screen('CopyWindow',winclear,win0);
+% POST BLOCK FEEDBACK *****************************************************
+final_feedback(task,block_first_matrix_line,block_last_matrix_line,task_setsize);
 
 
 % QUESTIONNAIRE POST EXPERIMENT *******************************************
@@ -344,7 +258,6 @@ if part_number == 3
     matrix_tot(:,column_score_acute_stress_post_E) = sum_E;
     
     Screen('CopyWindow',winclear,win0);
-    
 end
 
 % END screen **************************************************************

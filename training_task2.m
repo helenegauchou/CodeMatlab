@@ -1,7 +1,7 @@
 function training_task2(task,target_key_side,stress)
 
 global win0 winclear
-global accuracy_identification response_time
+global accuracy_identification accuracy_detection response_time
 
 matrix_settings;
 global_settings;
@@ -21,9 +21,10 @@ while global_accuracy_rate < 90;
     Screen(win0,'WaitBlanking',settings.REFRESH_RATE/2);
     
     l=0;
-    for rep=1:2                                             % 2*12 trials per loop = 24
+    %for rep=1:2                                             % 2*12 trials per loop = 24
         for target_case = settings.TARGET_CASE_task2        % 0= no target, 1 = target long line, 2 = target T
             for setsize = settings.SET_SIZE_task2
+                for first_VS_task = settings.FIRST_VS_TASK_TYPE
                 l=l+1;
                 if target_case < 2
                     target_presence = 0; % 0 = no target
@@ -31,9 +32,10 @@ while global_accuracy_rate < 90;
                     target_presence = 1; % 1 = target
                 end
                 m(l,:)=[target_case,setsize,target_presence];
+                end
             end
         end
-    end
+    %end
     m=m(randperm(l),:);
     
     sum_hit_long_line = 0;
@@ -44,37 +46,32 @@ while global_accuracy_rate < 90;
     sum_RT_hit_T = 0;    
     sum_RT_correct_rejection = 0;
     
-    for w=1:settings.TRIAL_NUMBER_PER_TRAINING_BLOCK 
+    for w=1:settings.TRIAL_NUMBER_PER_TRAINING_BLOCK
         
-        Exp(task,m(w,1),m(w,3),m(w,2),target_key_side,stress)
+        Exp(task,m(w,1),m(w,3),m(w,2),first_VS_task,target_key_side,stress)
         
-        matresult(w,:) = [m(w,1),accuracy_identification,response_time,m(w,3)];
+        matresult(w,:) = [m(w,1),accuracy_identification,accuracy_detection,response_time,m(w,3)];
         col_target_case = 1;
         col_accuracy_identification = 2;
-        col_response_time = 3;
-        col_target_presence = 4;
+        col_accuracy_detection = 3;
+        col_response_time = 4;
+        col_target_presence = 5;
         
-        if matresult(w,col_target_case) == settings.CASE_LONG_LINE
+        if (matresult(w,col_target_case) == settings.CASE_LONG_LINE)&&(matresult(w,col_accuracy_identification) == 1)
             sum_hit_long_line = sum_hit_long_line + matresult(w,col_accuracy_identification);
-            if matresult(w,col_accuracy_identification) == 1
-                sum_RT_hit_long_line = sum_RT_hit_long_line + matresult(w,col_response_time);
-            end
-        elseif matresult(w,col_target_case) == settings.CASE_T
+            sum_RT_hit_long_line = sum_RT_hit_long_line + matresult(w,col_response_time);
+        elseif (matresult(w,col_target_case) == settings.CASE_T)&&(matresult(w,col_accuracy_identification) == 1)
             sum_hit_T = sum_hit_T + matresult(w,col_accuracy_identification);
-            if matresult(w,col_accuracy_identification) == 1
-                sum_RT_hit_T = sum_RT_hit_T + matresult(w,col_response_time);
-            end
-            elseif matresult(w,col_target_presence) == 0;
-            sum_correct_rejection = sum_correct_rejection + matresult(w,col_accuracy_identification);
-            if matresult(w,col_accuracy_identification) == 1
-                sum_RT_correct_rejection = sum_RT_correct_rejection + matresult(w,col_response_time);
-            end
+            sum_RT_hit_T = sum_RT_hit_T + matresult(w,col_response_time);
+        elseif (matresult(w,col_target_presence) == 0)&&(matresult(w,col_accuracy_detection) == 1);
+            sum_correct_rejection = sum_correct_rejection + matresult(w,col_accuracy_detection);
+            sum_RT_correct_rejection = sum_RT_correct_rejection + matresult(w,col_response_time);
         end
         sum_correct_answer = sum_hit_long_line + sum_hit_T + sum_correct_rejection;
     end
     
-    hit_long_line_string = int2str(floor(sum_hit_long_line*100/(w/2)));
-    hit_T_string = int2str(floor(sum_hit_T*100/(w/2)));
+    hit_long_line_string = int2str(floor(sum_hit_long_line*100/(w/4)));
+    hit_T_string = int2str(floor(sum_hit_T*100/(w/4)));
     correct_rejection_string = int2str(floor(sum_correct_rejection*100/(w/2)));
     
     global_accuracy_rate = floor(sum_correct_answer*100/w);
@@ -110,7 +107,7 @@ while global_accuracy_rate < 90;
     while 1
         if KbCheck == 1
             key = GetChar;
-            if (key == 'n') || (key == 'N')
+            if lower(key) == settings.NEXT_KEY_FOR_EXPERIMENTER
                 break
             end
         end

@@ -42,7 +42,7 @@ Screen(win0,'DrawText',Text9,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y +
 while 1
     if KbCheck == 1
         key = GetChar;
-        if (key == 'N')||(key == 'm')
+        if lower(key) == settings.NEXT_KEY_FOR_EXPERIMENTER
             break
         end
     end

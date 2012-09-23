@@ -14,11 +14,11 @@ Screen(win2,'TextFont',settings.LETTER_FONT);
 if task == 1
     Text1='You will see on the screen several vertical dotted lines     and ONE tilted line';
     if target_key_side == 0;
-        target_tilted_left_key = 'O key';
-        target_tilted_right_key = 'P key';
+        target_tilted_left_key = [settings.LEFT_RESPONSE_KEY,' key'];
+        target_tilted_right_key = [settings.RIGHT_RESPONSE_KEY,' key'];
     else
-        target_tilted_left_key = 'P key';
-        target_tilted_right_key = 'O key';
+        target_tilted_left_key = [settings.RIGHT_RESPONSE_KEY,' key'];
+        target_tilted_right_key = [settings.LEFT_RESPONSE_KEY,' key'];
     end
     Text2=['- If the tilted line is like this       --> hit the ', target_tilted_left_key];
     Text3=['- If the tilted line is like this       --> hit the ', target_tilted_right_key];
@@ -44,7 +44,7 @@ end
 while 1
     if KbCheck == 1
         key = GetChar;
-        if (key == 'N')||(key == 'm')
+        if lower(key) == settings.NEXT_KEY_FOR_EXPERIMENTER
             break
         end
     end

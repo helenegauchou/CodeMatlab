@@ -4,9 +4,25 @@ settings = struct;
 % Experiment's Independant variables
 settings.TYPE_OF_TASK = 1:2; %1 = tilt side identification task; 2=switch between feature and conjunction search
 
+settings.FIRST_VS_TASK_TYPE = 1:2;%
+
 settings.SET_SIZE_task1 = [3,7,11];
 settings.SET_SIZE_task2 = [7,11,16];
+setsize_number = size(settings.SET_SIZE_task2,2);
+settings.MAX_SETSIZE = settings.SET_SIZE_task2(setsize_number);
 
+% % to be finalized!!!!! Presentation times (in second) for task 2 (switch task)
+% settings.DIPLAY_DURATION = .5; 
+% settings.BLANK_DURATION = .5;
+
+% response keys
+settings.LEFT_RESPONSE_KEY = 'a'; 
+settings.RIGHT_RESPONSE_KEY = 'p'; 
+settings.NO_TARGET_KEY = 32; 
+settings.NEXT_KEY_FOR_EXPERIMENTER = 'n'; 
+settings.NEXT_KEY_FOR_PARTICIPANT = 32; 
+
+% Matrix related parameters
 settings.TARGET_CASE_task2 = 0:3; % 0 & 1=no target; 2=long line; 3=T shape; 
 settings.TARGET_CASE_task1 = 4:5; % 3=left tilt; 4=right tilt 
 settings.CASE_NO_TARGET_0 = 0;
@@ -17,14 +33,14 @@ settings.CASE_LEFT_TILT = 4;
 settings.CASE_RIGHT_TILT = 5;
 
 settings.NUMBER_OF_EXPERIMENTAL_CONDITIONS_task1 = 6;
-settings.NUMBER_OF_EXPERIMENTAL_CONDITIONS_task2 = 12;
+settings.NUMBER_OF_EXPERIMENTAL_CONDITIONS_task2 = 24;
 
 settings.TRIAL_NUMBER_PER_BLOCK_task1 = 120; % (6 * 20 = 20 observations per experimental condition)
-settings.TRIAL_NUMBER_PER_BLOCK_task2 = 120; % (12 * 10 = 10 observations per experimental condition)
+settings.TRIAL_NUMBER_PER_BLOCK_task2 = 120; % (24 * 5 = 5 observations per experimental condition)
 
 settings.BLOCK_FIRST_MATRIX_LINE_task1_first = [1,...
                                                 settings.TRIAL_NUMBER_PER_BLOCK_task1+1,...
-                                                settings.TRIAL_NUMBER_PER_BLOCK_task2+settings.TRIAL_NUMBER_PER_BLOCK_task2+1];
+                                                settings.TRIAL_NUMBER_PER_BLOCK_task1+settings.TRIAL_NUMBER_PER_BLOCK_task2+1];
 
 settings.BLOCK_FIRST_MATRIX_LINE_task2_first = [1, settings.TRIAL_NUMBER_PER_BLOCK_task2+1, 2*settings.TRIAL_NUMBER_PER_BLOCK_task2+1];
 
@@ -61,14 +77,12 @@ settings.LENGTH_LONG_LINE = settings.CM;
 settings.LENGTH_SHORT_LINE = 0.8 * settings.CM;
 settings.WIDTH_LINE = 4;
 
-settings.DIPLAY_DURATION = settings.REFRESH_RATE/4;
-settings.BLANK_DURATION = settings.REFRESH_RATE/4;
-
 % Stimuli settings
 settings.WIDTH_CELL = 3.45 * settings.CM; 
 settings.MINIMAL_INTER_ITEM_DISTANCE = 0.6 * settings.CM;   
 white = [255,255,255]; 
 black = [0,0,0];
+grey = [180,180,180];
 red = [255,0,0];
 settings.TARGET_COLOR = white;
 settings.NON_TARGETS_COLOR = white;

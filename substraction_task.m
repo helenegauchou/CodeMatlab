@@ -21,7 +21,8 @@ Text1 = 'Please wait for the experimenter''s instructions';
 Screen(win0,'DrawText',Text1,settings.LOCATION_TEXT_X,settings.LOCATION_TEXT_Y,settings.LETTER_COLOR);
 while 1
     if KbCheck == 1 %
-        if (GetChar == 'n') || (GetChar == 'N')
+        key = GetChar;
+        if lower(key) == settings.NEXT_KEY_FOR_EXPERIMENTER
             break;
         end
     end
@@ -41,13 +42,13 @@ for t = 1:20
     Screen(win0,'DrawText',message,14.5*settings.CM,8*settings.CM,settings.LETTER_COLOR_INSTRUCTIONS);
     Screen(win0,'DrawText',substraction_text,14.5*settings.CM,9*settings.CM,settings.LETTER_COLOR);
     while 1
-    if KbCheck == 1
-        key = GetChar;
-        if (key == 'Q')||(key == 'q')||(key == 'M')||(key == 'm')
-            break
+        if KbCheck == 1
+            key = GetChar;
+            if (lower(key) == settings.LEFT_RESPONSE_KEY) || (lower(key) == settings.RIGHT_RESPONSE_KEY)
+                break
+            end
         end
     end
-end
 end
 
 
