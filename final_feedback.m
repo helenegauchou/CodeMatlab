@@ -90,7 +90,12 @@ if task == 1
     end
     Screen('CopyWindow',winclear,win0);
     
-elseif task == 2    
+elseif task == 2
+    block_first_matrix_line
+    block_last_matrix_line
+    matrix_tot
+    A = matrix_tot(1:120, :)
+    B = matrix_tot(block_first_matrix_line:block_last_matrix_line, :);
     matrix_current_part = matrix_tot(block_first_matrix_line:block_last_matrix_line, :);
     
     matrix_target_present = matrix_current_part(matrix_tot((block_first_matrix_line:block_last_matrix_line),column_target_presence) == 1, :);

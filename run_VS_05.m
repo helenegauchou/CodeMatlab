@@ -5,7 +5,7 @@ global response_detection response_identification accuracy_detection accuracy_id
 global trial_duration response_time response_time_log
 global total_number_of_cycle total_number_of_screen total_number_of_target_screen target_screen screen_number_when_keypress_happened
 global excentricity quadrant
-global DIPLAY_DURATION BLANK_DURATION
+global DIPLAY_DURATION BLANK_DURATION matrix_tot
 
 HideCursor;
 
@@ -244,6 +244,12 @@ for x = 1:trial_number_per_block
 end
 
 Screen('CopyWindow',winclear,win0);
+
+filename = (strcat('Matrix_ParticipantTEST_',question_ID_subject));
+save(filename,'matrix_tot');
+
+filename_csv = strcat( filename,'.csv');
+csvwrite(filename_csv,matrix_tot)
 
 % POST BLOCK FEEDBACK *****************************************************
 final_feedback(task,block_first_matrix_line,block_last_matrix_line,task_setsize);
