@@ -16,7 +16,7 @@ settings.MAX_SETSIZE = settings.SET_SIZE_task2(setsize_number);
 % settings.BLANK_DURATION = .5;
 
 % response keys
-settings.LEFT_RESPONSE_KEY = 'a'; 
+settings.LEFT_RESPONSE_KEY = 'o'; 
 settings.RIGHT_RESPONSE_KEY = 'p'; 
 settings.NO_TARGET_KEY = 32; 
 settings.NEXT_KEY_FOR_EXPERIMENTER = 'n'; 

@@ -141,7 +141,7 @@ if part_number == 1
     total_number_of_rows = length(matrix_tot);
     
     for row = 1:total_number_of_rows
-        matrix_tot(row,column_ID_subject:column_stress) = [ID_subject,age,gender,handedness,vision,target_key_side,stress];
+        matrix_tot(row,column_ID_subject:column_blank_duration) = [ID_subject,age,gender,handedness,vision,target_key_side,stress,DIPLAY_DURATION,BLANK_DURATION];
         matrix_tot(row,column_score_anxiety:column_score_acute_stress_pre_E) = [sum_STAI,sum_PSS,sum_W,sum_D,sum_E];
     end
 else
