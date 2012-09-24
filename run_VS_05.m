@@ -1,9 +1,10 @@
 function run_VS_05
 
 global win0 win1 win2 winclear winnoise
-global response_detection response_identification accuracy_detection accuracy_identification
-global response_time response_time_log excentricity quadrant
-global matrix_tot
+global response_detection response_identification accuracy_detection accuracy_identification valid_trial
+global trial_duration response_time response_time_log
+global total_number_of_cycle total_number_of_screen total_number_of_target_screen target_screen screen_number_when_keypress_happened
+global excentricity quadrant
 global DIPLAY_DURATION BLANK_DURATION
 
 HideCursor;
@@ -189,15 +190,15 @@ target_key_side = matrix_tot(block_first_matrix_line,column_target_key_side);
 % instructions
 instruction(task,target_key_side);
 
-%training
-block_number =  matrix_tot(block_first_matrix_line,column_block);
-if block_number == 1
-    if task == 1
-        training_task1(task,target_key_side,stress);
-    elseif task == 2
-        training_task2(task,target_key_side,stress);
-    end
-end
+% %training
+% block_number =  matrix_tot(block_first_matrix_line,column_block);
+% if block_number == 1
+%     if task == 1
+%         training_task1(task,target_key_side,stress);
+%     elseif task == 2
+%         training_task2(task,target_key_side,stress);
+%     end
+% end
 
 % instructions reminder
 readytostart;
@@ -215,9 +216,6 @@ end
 for x = 1:trial_number_per_block
     
     current_matrix_line = block_first_matrix_line - 1 + x;
-
-
-    
     
     Exp(matrix_tot(current_matrix_line,column_task),...
         matrix_tot(current_matrix_line,column_target_case),...
@@ -230,10 +228,17 @@ for x = 1:trial_number_per_block
     matrix_tot(current_matrix_line,column_response_detection:column_quadrant) = ...
         [response_detection,...
         response_identification,...
-        accuracy_detection,...
+        accuracy_detection,...       
         accuracy_identification,...
+        valid_trial,...
+        trial_duration,...
         response_time,...
         response_time_log,...
+        total_number_of_cycle,...
+        total_number_of_screen,...
+        total_number_of_target_screen,...
+        target_screen,...
+        screen_number_when_keypress_happened,...        
         excentricity,...
         quadrant];
 end
